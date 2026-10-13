@@ -1,0 +1,27 @@
+-- ============================================================
+-- FORMULARIO: consulta.per
+-- Consulta SQL libre y búsqueda de clientes
+-- ============================================================
+
+LAYOUT
+GRID
+{
+[consulta_sql                                                               ]
+[msg_error                                                                  ]
+[#lista_clientes                                                            ]
+}
+END
+END LAYOUT
+
+ATTRIBUTES
+consulta_sql  = FIELD(consulta, SCROLL, WORDWRAP, 
+                      COMMENT="Escriba SELECT... (solo lectura)");
+msg_error     = FIELD(mensaje, NOENTRY, COLOR=RED);
+#lista_clientes = SCREEN RECORD lista_clientes(lista.*);
+END ATTRIBUTES
+
+INSTRUCTIONS
+ON KEY (F5)  CALL ejecutar_consulta()
+ON KEY (F6)  CALL exportar_resultado()
+ON KEY (F10) CALL salir()
+END INSTRUCTIONS

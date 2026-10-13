@@ -1,0 +1,51 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+logs/
+*.log
+
+# Plantillas generadas (se regeneran)
+plantillas_maestras/
+plantillas_datos/
+plantillas_procesadas/
+plantillas_errores/
+salida/
+
+# Base de datos local
+*.db
+*.sqlite
+
+# Compilados Genero
+*.42m
+*.42f
+*.42r
+*.ao
+*.42x
+
+# Temporales
+*.tmp
+*.temp
+~*
+
+# Config local
+bancos_config.local.json
+local_settings.py

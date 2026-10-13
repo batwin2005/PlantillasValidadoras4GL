@@ -1,0 +1,45 @@
+# ============================================================
+# FORMULARIO: exportar.per
+# Exportar resultados a múltiples formatos
+# ============================================================
+
+DATABASE banco
+
+SCREEN RECORD exportar_rec (
+    formato,
+    archivo_destino,
+    lbl_formatos
+)
+
+LAYOUT
+GRID
+{
+[exportar                                          ]
+[ lbl_titulo                                       ]
+[                                                  ]
+[ Formato:        [formato                  ]     ]
+[ lbl_formatos                                     ]
+[                                                  ]
+[ Destino:        [archivo_destino        |examinar] ]
+[                                                  ]
+[ [exportar                     |cancelar      ] ]
+}
+END
+END
+
+ATTRIBUTES
+TITLE = "Exportar Resultados";
+FORMONLY.lbl_titulo = formonly.lbl_titulo, NOENTRY, COLOR=BLUE, REVERSE;
+FORMONLY.lbl_formatos = formonly.lbl_formatos, NOENTRY, COLOR=GREEN;
+FORMONLY.formato = formonly.formato, UPSHIFT, INCLUDE=("XLSX","CSV","XML","PDF","HTML");
+FORMONLY.archivo_destino = formonly.archivo_destino;
+END
+
+INSTRUCTIONS
+ON ACTION examinar
+    MESSAGE "Seleccionar destino..."
+ON ACTION exportar
+    MESSAGE "Exportando a ", formato, "..."
+ON ACTION cancelar
+    EXIT MENU
+END

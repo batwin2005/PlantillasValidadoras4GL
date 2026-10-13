@@ -1,0 +1,45 @@
+# ============================================================
+# FORMULARIO: master_carga.per
+# Cargar plantilla master
+# ============================================================
+
+DATABASE banco
+
+SCREEN RECORD master_rec (
+    archivo_master,
+    lbl_banco,
+    lbl_plantilla
+)
+
+LAYOUT
+GRID
+{
+[master_carga                                      ]
+[ lbl_titulo                                       ]
+[                                                  ]
+[ Banco:          [lbl_banco                    ] ]
+[ Plantilla:      [lbl_plantilla                ] ]
+[                                                  ]
+[ Archivo Master: [archivo_master           |examinar] ]
+[                                                  ]
+[ [procesar                      |cancelar     ] ]
+}
+END
+END
+
+ATTRIBUTES
+TITLE = "Cargar Plantilla Master";
+FORMONLY.lbl_titulo = formonly.lbl_titulo, NOENTRY, COLOR=BLUE, REVERSE;
+FORMONLY.lbl_banco = formonly.lbl_banco, NOENTRY;
+FORMONLY.lbl_plantilla = formonly.lbl_plantilla, NOENTRY;
+FORMONLY.archivo_master = formonly.archivo_master;
+END
+
+INSTRUCTIONS
+ON ACTION examinar
+    MESSAGE "Examinar archivo..."
+ON ACTION procesar
+    MESSAGE "Procesando master..."
+ON ACTION cancelar
+    EXIT MENU
+END

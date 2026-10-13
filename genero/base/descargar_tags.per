@@ -1,0 +1,42 @@
+# ============================================================
+# FORMULARIO: descargar_tags.per
+# Descargar plantilla con tags para que usuario llene
+# ============================================================
+
+DATABASE banco
+
+SCREEN RECORD descargar_rec (
+    archivo_destino,
+    lbl_origen
+)
+
+LAYOUT
+GRID
+{
+[descargar_tags                                    ]
+[ lbl_titulo                                       ]
+[                                                  ]
+[ Origen:         [lbl_origen                   ] ]
+[                                                  ]
+[ Destino:        [archivo_destino          |examinar] ]
+[                                                  ]
+[ [descargar                    |cancelar      ] ]
+}
+END
+END
+
+ATTRIBUTES
+TITLE = "Descargar Plantilla con Tags";
+FORMONLY.lbl_titulo = formonly.lbl_titulo, NOENTRY, COLOR=BLUE, REVERSE;
+FORMONLY.lbl_origen = formonly.lbl_origen, NOENTRY;
+FORMONLY.archivo_destino = formonly.archivo_destino;
+END
+
+INSTRUCTIONS
+ON ACTION examinar
+    MESSAGE "Seleccionar destino..."
+ON ACTION descargar
+    MESSAGE "Descargando plantilla..."
+ON ACTION cancelar
+    EXIT MENU
+END

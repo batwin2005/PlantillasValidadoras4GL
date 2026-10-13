@@ -1,0 +1,31 @@
+-- ============================================================
+-- FORMULARIO: lote.per
+-- Grilla de importación masiva (array con estado OK/ERROR)
+-- ============================================================
+
+LAYOUT
+GRID
+{
+[archivo_xml                                                           ]
+[#lote_import                                                          ]
+[btn_procesar    ][btn_cancelar    ][btn_exportar_errores  ]
+}
+END
+END LAYOUT
+
+ATTRIBUTES
+archivo_xml = FIELD(ruta_archivo, NOENTRY, COMMENT="Archivo XML seleccionado");
+
+#lote_import = SCREEN RECORD lote_import(lote[1:100].*);
+
+btn_procesar       = BUTTONEDIT btn_procesar, TEXT="Procesar Importación";
+btn_cancelar       = BUTTONEDIT btn_cancelar, TEXT="Cancelar";
+btn_exportar_errores = BUTTONEDIT btn_exportar_errores, TEXT="Exportar Errores";
+
+END ATTRIBUTES
+
+INSTRUCTIONS
+ON KEY (F5)  CALL procesar_lote()
+ON KEY (F6)  CALL exportar_errores()
+ON KEY (F10) CALL salir()
+END INSTRUCTIONS
