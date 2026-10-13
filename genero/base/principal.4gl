@@ -34,7 +34,8 @@ MAIN
             COMMAND "1. Validar Archivo SpreadsheetML"  CALL validar_archivo_menu()
             COMMAND "2. Ver Datos de Archivo"           CALL ver_datos_menu()
             COMMAND "3. Exportar Datos Validados"       CALL exportar_menu()
-            COMMAND "4. Verificar Entorno"              CALL check_entorno()
+            COMMAND "4. Ejecutar Tests"                 CALL ejecutar_tests()
+            COMMAND "5. Verificar Entorno"              CALL check_entorno()
             COMMAND "0. Salir"                          LET continuar = FALSE
         END MENU
     END WHILE
