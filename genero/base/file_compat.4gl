@@ -103,9 +103,9 @@ FUNCTION fc_seleccionar_archivo(p_titulo VARCHAR(100), p_filtro VARCHAR(50))
     
     DEFINE v_ruta VARCHAR(300)
     
-    -- Intentar fgl_getfiledialog (Genero 2.x/3.x)
-    -- En 1.x usar INPUT simple
-    LET v_ruta = fgl_getfiledialog(p_titulo, p_filtro)
+    -- Compatible 1.x/2.x/3.x: INPUT simple
+    -- En 2.x/3.x se puede reemplazar por fgl_getfiledialog
+    PROMPT p_titulo || " (" || p_filtro || "): " FOR v_ruta
     
     RETURN v_ruta
 END FUNCTION

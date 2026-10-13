@@ -170,11 +170,19 @@ END FUNCTION
 -- UTILIDADES
 -- ============================================================
 FUNCTION file_dialog(p_titulo, p_filtro, p_resultado)
-    -- Usar fgl_getfiledialog según versión Genero
+    DEFINE p_titulo VARCHAR(100)
+    DEFINE p_filtro VARCHAR(50)
+    DEFINE p_resultado VARCHAR(300)
+    
+    PROMPT p_titulo || " (" || p_filtro || "): " FOR p_resultado
 END FUNCTION
 
 FUNCTION file_save_dialog(p_titulo, p_ext, p_resultado)
-    -- Usar fgl_getfiledialog modo save
+    DEFINE p_titulo VARCHAR(100)
+    DEFINE p_ext VARCHAR(10)
+    DEFINE p_resultado VARCHAR(300)
+    
+    PROMPT p_titulo || " (." || p_ext || "): " FOR p_resultado
 END FUNCTION
 
 FUNCTION check_entorno()

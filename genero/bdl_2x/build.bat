@@ -22,8 +22,8 @@ ECHO [1/4] Compilando validacion.4gl...
 fglcomp ..\base\validacion.4gl
 IF ERRORLEVEL 1 GOTO ERROR
 
-ECHO [2/4] Compilando validacion_dinamica.4gl...
-fglcomp ..\base\validacion_dinamica.4gl
+ECHO [2/4] Compilando file_compat.4gl...
+fglcomp ..\base\file_compat.4gl
 IF ERRORLEVEL 1 GOTO ERROR
 
 ECHO [3/4] Compilando spreadsheetml.4gl...
@@ -39,7 +39,7 @@ fglcomp ..\base\principal.4gl
 IF ERRORLEVEL 1 GOTO ERROR
 
 ECHO Linkando principal...
-fglink -o principal principal.42m validacion.42m validacion_dinamica.42m spreadsheetml.42m validador.42m
+fglink -o principal principal.42m validacion.42m file_compat.42m spreadsheetml.42m validador.42m test_spreadsheetml.42m
 
 ECHO.
 ECHO ============================================================

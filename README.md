@@ -1,115 +1,80 @@
 # PlantillasValidadoras4GL
 
-Sistema bancario para **importar, validar y exportar** datos entre Excel e Informix 14.10 usando Genero BDL 4GL.
+Sistema bancario **100% Genero 4GL** para validar datos entre Excel (SpreadsheetML) e Informix 14.10. Sin Python.
 
-## Flujo Principal
+## Flujo
 
 ```
-1. (Una vez por plantilla) Menú 2: Configurar Nueva Plantilla
-   → Sube Excel → Wizard detecta columnas → Asignas validador a cada una → Guarda JSON
-
-2. Usuario elige banco → Sistema carga config JSON (campos, validadores)
-3. Usuario descarga plantilla con tags {{campo}} → Llena datos en Excel
-4. Usuario sube archivo → Sistema valida cada campo (val_* 4GL + reglas BD)
-5. Si OK → exporta a cualquier formato (XLSX, CSV, XML, PDF, HTML)
-6. Si ERROR → muestra errores → usuario corrige → reintenta
+1. Usuario abre template .xls con tags {{campo}} en Excel
+2. Llena datos y guarda como archivo datos
+3. En Genero: carga archivo -> valida con val_* -> muestra resultado
+4. Si OK -> exporta archivo limpio sin tags
+5. Si ERROR -> genera archivo con hoja Datos (rojo) + hoja Errores (motivo)
 ```
 
-## Estructura Simplificada
+## Estructura
 
 ```
 PlantillasValidadoras4GL/
-├── config/
-│   ├── nacion_clientes.json    # Definición campos/validadores por banco
-│   └── galicia_cuentas.json     # (agregar más bancos aquí)
-├── plantillas/                 # Excel maestras por banco
-├── plantillas_tags/            # Copias generadas con tags
-├── plantillas_datos/           # Usuario llena y sube
-├── plantillas_errores/         # Salida con errores
-├── salida/                     # Exportaciones finales
+├── db/
+│   ├── 01_esquema.sql          # Tablas base (cliente, cuenta, catalogos)
+│   ├── 02_tablas.sql           # Tabla banco
+│   ├── 03_catalogos.sql        # Datos semilla
+│   ├── 04_sp_xml.sql           # SPs XML (genxmlqueryhdr)
+│   └── reglas_validacion.sql   # Reglas dinamicas
 ├── genero/
 │   ├── base/
-│   │   ├── validacion.4gl      # Funciones val_* (core)
-│   │   ├── validacion_dinamica.4gl  # Reglas BD
-│   │   ├── importar_exportar.4gl    # Import/Export
-│   │   ├── xml_plantilla.4gl   # Parseo XML
-│   │   └── principal.4gl       # Menú simple
-│   ├── bdl_1x/ bdl_2x/ bdl_3x/  # Build scripts
-├── tools/
-│   ├── insertar_tags.py        # Agregar tags a plantilla
-│   ├── validar_excel.py        # Leer Excel y retornar datos
-│   ├── generar_errores_excel.py # Crear archivo con hoja ERRORES
-│   └── exportar_xlsx.py        # Exportar resultados
-├── db/
-│   ├── 01_esquema.sql          # Tablas base
-│   ├── 03_catalogos.sql        # Catálogos
-│   ├── 04_sp_xml.sql           # SPs XML
-│   └── reglas_validacion.sql   # Reglas dinámicas
+│   │   ├── principal.4gl          # Menu: validar, ver, exportar, tests
+│   │   ├── spreadsheetml.4gl      # Leer/escribir SpreadsheetML
+│   │   ├── validador.4gl          # Validar archivo con val_*
+│   │   ├── validacion.4gl         # Funciones val_* (core)
+│   │   ├── validacion_dinamica.4gl# Reglas BD
+│   │   ├── file_compat.4gl        # Archivos compatible 1.x/2.x/3.x
+│   │   └── test_spreadsheetml.4gl # 9 tests
+│   ├── bdl_1x/build.bat
+│   ├── bdl_2x/build.bat
+│   └── bdl_3x/build.bat
+├── plantillas/
+│   ├── plantilla_minima.xls    # Template con tags (input)
+│   ├── plantilla_datos.xls     # Datos validos (input)
+│   ├── plantilla_errores.xls  # Datos con errores + hoja Errores
+│   └── plantilla_generada.xls # Ejemplo generado
+├── salida/
+│   └── datos_validados.xls     # Output limpio sin tags
 └── README.md
 ```
 
-## Configuración por Banco
+## Instalacion
 
-Cada banco tiene un JSON en `config/` que define:
-
-```json
-{
-  "banco": "nacion",
-  "archivo_maestra": "plantillas/nacion_clientes.xlsx",
-  "hoja": "Clientes",
-  "fila_tags": 2,
-  "fila_datos": 3,
-  "campos": [
-    {"columna": "A", "tag": "tipo_doc", "validador": "val_catalogo", "obligatorio": true},
-    {"columna": "B", "tag": "num_doc", "validador": "val_documento", "obligatorio": true}
-  ]
-}
-```
-
-## Instalación
-
-### 1. Base de Datos (Informix 14.10)
+### 1. BD Informix 14.10
 ```bash
-docker start ifx
 dbaccess sysmaster db/01_esquema.sql
+dbaccess banco db/02_tablas.sql
 dbaccess banco db/03_catalogos.sql
 dbaccess banco db/04_sp_xml.sql
 dbaccess banco db/reglas_validacion.sql
 ```
 
-### 2. Python
-```bash
-pip install openpyxl
-```
-
-### 3. Genero 4GL
+### 2. Genero (cualquiera de las 3 versiones)
 ```cmd
 cd genero\bdl_2x
 build.bat
 fglrun principal
 ```
 
-## Uso Rápido
+## Validadores
 
-```cmd
-REM 1. Generar plantilla con tags
-python tools\insertar_tags.py config\nacion_clientes.json plantillas\nacion_clientes.xlsx plantillas_tags\nacion_tags.xlsx
+| Validador | Regla |
+|-----------|-------|
+| `val_nombre` | Solo letras, 2-60 |
+| `val_documento` | Alfanumerico, 5-20 |
+| `val_fecha` | DD/MM/YYYY, 1900-hoy |
+| `val_email` | Con @ y dominio |
+| `val_telefono` | 7-20 digitos |
+| `val_anio` | 1900-actual |
+| `val_monto` | >= 0, max 2 decimales |
+| `val_catalogo` | Existe en tabla |
 
-REM 2. Usuario llena plantilla_tags\nacion_tags.xlsx en Excel
+## Compatibilidad
 
-REM 3. En Genero: cargar archivo, validar, exportar
-```
-
-## Validadores Disponibles
-
-| Validador | Descripción |
-|-----------|-------------|
-| `val_nombre` | Solo letras, 2-60 chars |
-| `val_documento` | Alfanumérico, 5-20 chars |
-| `val_fecha` | DD/MM/YYYY, rango 1900-hoy |
-| `val_email` | Formato email con @ y dominio |
-| `val_telefono` | 7-20 dígitos, +() - espacio |
-| `val_anio` | Entero 1900-año actual |
-| `val_monto` | Decimal >= 0, max 2 decimales |
-| `val_catalogo` | Valor existe en tabla catálogo |
-| `val_texto` | Texto libre con longitud opcional |
+Codigo compatible con Genero BDL 1.x, 2.x y 3.x (sin base.Channel, sin IMPORT FGL).
