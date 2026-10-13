@@ -156,26 +156,80 @@ FUNCTION validar_archivo_spm(p_ruta VARCHAR(300))
 END FUNCTION
 
 -- ============================================================
--- EXPORTAR DATOS VALIDADOS A SPREADSHEETML
+-- EXPORTAR DATOS VALIDADOS A SPREADSHEETML (sin tags)
+-- Lee archivo con tags → extrae datos → genera output limpio
 -- ============================================================
 FUNCTION exportar_validados_spm(p_ruta_origen VARCHAR(300), p_ruta_salida VARCHAR(300))
     RETURNING SMALLINT;
     
     DEFINE v_xml LVARCHAR(32000)
+    DEFINE v_total_filas INTEGER
+    DEFINE v_fila INTEGER
+    DEFINE v_fila_datos INTEGER
+    DEFINE v_col INTEGER
+    DEFINE v_valor VARCHAR(255)
+    DEFINE v_datos ARRAY[1:500] OF ARRAY[1:50] OF VARCHAR(255)
+    DEFINE v_headers ARRAY[1:50] OF VARCHAR(80)
+    DEFINE v_num_rows INTEGER
+    DEFINE v_num_cols SMALLINT
     DEFINE v_xml_salida LVARCHAR(32000)
+    DEFINE v_titulo VARCHAR(100)
     
-    -- Leer archivo original
+    -- Leer archivo con tags
     LET v_xml = spm_leer_archivo(p_ruta_origen)
+    IF v_xml = "" THEN
+        ERROR "No se pudo leer el archivo"
+        RETURN FALSE
+    END IF
     
-    -- Generar nuevo SpreadsheetML con datos validados
-    -- (Aquí se construye el XML de salida)
+    LET v_total_filas = spm_contar_filas(v_xml)
     
-    LET v_xml_salida = v_xml
+    -- Buscar fila de tags
+    LET gv_fila_tags = 0
+    FOR v_fila = 1 TO v_total_filas
+        LET v_valor = spm_get_celda(v_xml, v_fila, 1)
+        IF v_valor MATCHES "{{*}}" THEN
+            LET gv_fila_tags = v_fila
+            EXIT FOR
+        END IF
+    END FOR
     
-    -- Escribir archivo
+    IF gv_fila_tags = 0 THEN
+        ERROR "No se encontraron tags"
+        RETURN FALSE
+    END IF
+    
+    LET v_fila_datos = gv_fila_tags + 1
+    
+    -- Extraer encabezados (fila antes de tags)
+    LET v_num_cols = spm_contar_celdas_fila(v_xml, gv_fila_tags - 1)
+    FOR v_col = 1 TO v_num_cols
+        LET v_headers[v_col] = spm_get_celda(v_xml, gv_fila_tags - 1, v_col)
+    END FOR
+    
+    -- Extraer datos por tags
+    LET v_num_rows = 0
+    FOR v_fila = v_fila_datos TO v_total_filas
+        LET v_num_rows = v_num_rows + 1
+        FOR v_col = 1 TO v_num_cols
+            LET v_valor = spm_get_celda(v_xml, v_fila, v_col)
+            IF v_valor IS NULL THEN LET v_valor = "" END IF
+            -- No incluir tags en output
+            IF v_valor MATCHES "{{*}}" THEN
+                LET v_valor = ""
+            END IF
+            LET v_datos[v_num_rows, v_col] = v_valor
+        END FOR
+    END FOR
+    
+    -- Generar XML limpio sin tags
+    LET v_titulo = "Datos Validados"
+    LET v_xml_salida = spm_generar_xml(v_titulo, v_headers, v_datos, v_num_rows, v_num_cols)
+    
+    -- Escribir archivo limpio
     CALL spm_escribir_archivo(p_ruta_salida, v_xml_salida)
     
-    MESSAGE "✅ Exportado: ", p_ruta_salida
+    MESSAGE "✅ Exportado sin tags: ", p_ruta_salida
     RETURN TRUE
 END FUNCTION
 

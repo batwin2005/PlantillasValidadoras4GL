@@ -18,19 +18,13 @@
  <Worksheet ss:Name="Datos">
   <Table>
    <Row>
-    <Cell ss:StyleID="Title"><Data ss:Type="String">BANCO NACION - Clientes (Generado por spm_generar_xml)</Data></Cell>
+    <Cell ss:StyleID="Title"><Data ss:Type="String">Datos Validados - BANCO NACION</Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="Header"><Data ss:Type="String">Tipo Doc</Data></Cell>
     <Cell ss:StyleID="Header"><Data ss:Type="String">Nro Doc</Data></Cell>
     <Cell ss:StyleID="Header"><Data ss:Type="String">Apellidos</Data></Cell>
     <Cell ss:StyleID="Header"><Data ss:Type="String">Nombres</Data></Cell>
-   </Row>
-   <Row>
-    <Cell><Data ss:Type="String">{{tipo_doc}}</Data></Cell>
-    <Cell><Data ss:Type="String">{{num_doc}}</Data></Cell>
-    <Cell><Data ss:Type="String">{{apellidos}}</Data></Cell>
-    <Cell><Data ss:Type="String">{{nombres}}</Data></Cell>
    </Row>
    <Row>
     <Cell><Data ss:Type="String">DNI</Data></Cell>
