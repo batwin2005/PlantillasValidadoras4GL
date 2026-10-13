@@ -10,31 +10,48 @@
    <Font ss:Bold="1" ss:Size="14" ss:Color="#FFFFFF"/>
    <Interior ss:Color="#003366" ss:Pattern="Solid"/>
   </Style>
+  <Style ss:ID="TitleError">
+   <Font ss:Bold="1" ss:Size="14" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#CC0000" ss:Pattern="Solid"/>
+  </Style>
   <Style ss:ID="Header">
    <Font ss:Bold="1" ss:Color="#FFFFFF"/>
    <Interior ss:Color="#003366" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="HeaderError">
+   <Font ss:Bold="1" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#CC0000" ss:Pattern="Solid"/>
   </Style>
   <Style ss:ID="Error">
    <Font ss:Color="#CC0000"/>
    <Interior ss:Color="#FFE6E6" ss:Pattern="Solid"/>
   </Style>
+  <Style ss:ID="Tag">
+   <Font ss:Bold="1" ss:Color="#003366" ss:Size="9" ss:Italic="1"/>
+   <Interior ss:Color="#E8F0FE" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="ErrorText">
+   <Font ss:Color="#CC0000" ss:Bold="1"/>
+  </Style>
  </Styles>
+
+ <!-- Hoja 1: Datos con errores resaltados -->
  <Worksheet ss:Name="Datos">
   <Table>
    <Row>
-    <Cell ss:StyleID="Title"><Data ss:Type="String">BANCO NACION - Clientes (CON ERRORES)</Data></Cell>
+    <Cell ss:StyleID="TitleError"><Data ss:Type="String">BANCO NACION - Clientes (CON ERRORES)</Data></Cell>
    </Row>
    <Row>
-    <Cell ss:StyleID="Header"><Data ss:Type="String">Tipo Doc</Data></Cell>
-    <Cell ss:StyleID="Header"><Data ss:Type="String">Nro Doc</Data></Cell>
-    <Cell ss:StyleID="Header"><Data ss:Type="String">Apellidos</Data></Cell>
-    <Cell ss:StyleID="Header"><Data ss:Type="String">Nombres</Data></Cell>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Tipo Doc</Data></Cell>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Nro Doc</Data></Cell>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Apellidos</Data></Cell>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Nombres</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">{{tipo_doc}}</Data></Cell>
-    <Cell><Data ss:Type="String">{{num_doc}}</Data></Cell>
-    <Cell><Data ss:Type="String">{{apellidos}}</Data></Cell>
-    <Cell><Data ss:Type="String">{{nombres}}</Data></Cell>
+    <Cell ss:StyleID="Tag"><Data ss:Type="String">{{tipo_doc}}</Data></Cell>
+    <Cell ss:StyleID="Tag"><Data ss:Type="String">{{num_doc}}</Data></Cell>
+    <Cell ss:StyleID="Tag"><Data ss:Type="String">{{apellidos}}</Data></Cell>
+    <Cell ss:StyleID="Tag"><Data ss:Type="String">{{nombres}}</Data></Cell>
    </Row>
    <Row>
     <Cell ss:StyleID="Error"><Data ss:Type="String">INVALIDO</Data></Cell>
@@ -50,4 +67,49 @@
    </Row>
   </Table>
  </Worksheet>
+
+ <!-- Hoja 2: Errores detallados -->
+ <Worksheet ss:Name="Errores">
+  <Table>
+   <Row>
+    <Cell ss:StyleID="TitleError"><Data ss:Type="String">DETALLE DE ERRORES</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Fila</Data></Cell>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Campo</Data></Cell>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Valor Ingresado</Data></Cell>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Motivo del Error</Data></Cell>
+    <Cell ss:StyleID="HeaderError"><Data ss:Type="String">Validador</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">4</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">tipo_doc</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">INVALIDO</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">No existe en catalogo (DNI, LE, LC, PAS)</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">val_catalogo</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">4</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">num_doc</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">123</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">Documento debe tener 5-20 caracteres</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">val_documento</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">4</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">apellidos</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">PEREZ123</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">Solo letras permitidas (no numeros)</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">val_nombre</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">4</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">nombres</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">JUAN@</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">Caracter especial no permitido: @</Data></Cell>
+    <Cell ss:StyleID="Error"><Data ss:Type="String">val_nombre</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+
 </Workbook>
