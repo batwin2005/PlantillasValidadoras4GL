@@ -9,25 +9,12 @@ GLOBALS
 END GLOBALS
 
 -- ============================================================
--- LEER ARCHIVO SPREADSHEETML
+-- LEER ARCHIVO SPREADSHEETML (compatible 1.x/2.x/3.x)
 -- ============================================================
 FUNCTION spm_leer_archivo(p_ruta VARCHAR(300))
     RETURNING LVARCHAR;
     
-    DEFINE v_file base.Channel
-    DEFINE v_linea VARCHAR(32000)
-    DEFINE v_contenido LVARCHAR(32000)
-    
-    LET v_file = base.Channel.create()
-    CALL v_file.openFile(p_ruta, "r")
-    
-    LET v_contenido = ""
-    WHILE v_file.read(v_linea)
-        LET v_contenido = v_contenido || v_linea
-    END WHILE
-    CALL v_file.close()
-    
-    RETURN v_contenido
+    RETURN fc_leer_archivo(p_ruta)
 END FUNCTION
 
 -- ============================================================
@@ -267,19 +254,12 @@ FUNCTION spm_generar_xml(p_titulo VARCHAR(100), p_headers ARRAY[1:50] OF VARCHAR
 END FUNCTION
 
 -- ============================================================
--- ESCRIBIR ARCHIVO SPREADSHEETML
+-- ESCRIBIR ARCHIVO SPREADSHEETML (compatible 1.x/2.x/3.x)
 -- ============================================================
 FUNCTION spm_escribir_archivo(p_ruta VARCHAR(300), p_xml LVARCHAR(32000))
     RETURNING SMALLINT;
     
-    DEFINE v_file base.Channel
-    
-    LET v_file = base.Channel.create()
-    CALL v_file.openFile(p_ruta, "w")
-    CALL v_file.write(p_xml)
-    CALL v_file.close()
-    
-    RETURN TRUE
+    RETURN fc_escribir_archivo(p_ruta, p_xml)
 END FUNCTION
 
 -- ============================================================

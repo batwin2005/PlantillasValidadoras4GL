@@ -34,6 +34,12 @@ FUNCTION validar_archivo_spm(p_ruta VARCHAR(300))
     
     LET gv_archivo = p_ruta
     
+    -- Verificar que el archivo existe
+    IF NOT fc_archivo_existe(p_ruta) THEN
+        ERROR "Archivo no encontrado: ", p_ruta
+        RETURN FALSE
+    END IF
+    
     -- Leer archivo
     LET v_xml = spm_leer_archivo(p_ruta)
     IF v_xml = "" THEN
