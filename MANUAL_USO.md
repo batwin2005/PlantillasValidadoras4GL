@@ -267,11 +267,11 @@ Ver: fila 1 titulo, fila 2 encabezados, fila 3 tags
 `{{tipo_doc}} {{num_doc}} {{apellidos}} {{nombres}}`,
 filas 4-6 con datos:
 
-```
-DNI | 30123456 | PEREZ  | JUAN CARLOS
-DNI | 30789012 | GARCIA | MARIA ELENA
-LE  | 20456789 | LOPEZ  | CARLOS ALBERTO
-```
+| Tipo Doc | Nro Doc | Apellidos | Nombres |
+|----------|---------|-----------|---------|
+| DNI | 30123456 | PEREZ | JUAN CARLOS |
+| DNI | 30789012 | GARCIA | MARIA ELENA |
+| LE | 20456789 | LOPEZ | CARLOS ALBERTO |
 
 **Paso 2.** Ejecutar el programa:
 
@@ -338,9 +338,9 @@ plantillas\plantilla_errores.xls
 
 Hoja **Datos**, fila 4:
 
-```
-INVALIDO | 123 | PEREZ123 | JUAN@
-```
+| Tipo Doc | Nro Doc | Apellidos | Nombres |
+|----------|---------|-----------|---------|
+| INVALIDO | 123 | PEREZ123 | JUAN@ |
 
 **Paso 2.** Validar igual que en el Escenario A:
 
@@ -385,9 +385,9 @@ Hay errores en los datos - revise el archivo
 
 **Paso 5.** Corregir la fila 4 en Excel (ejemplo):
 
-```
-DNI | 30123456 | PEREZ | JUAN
-```
+| Tipo Doc | Nro Doc | Apellidos | Nombres |
+|----------|---------|-----------|---------|
+| DNI | 30123456 | PEREZ | JUAN |
 
 Guardar y volver a validar (Escenario A, Paso 3). Ahora debe dar
 `Filas OK` sin errores.
