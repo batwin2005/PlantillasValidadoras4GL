@@ -1,6 +1,6 @@
 -- ============================================================
 -- MODULO: principal.4gl
--- Programa principal - Menú de entrada
+-- Programa principal - Menú simplificado 100% 4GL
 -- Compatible: Genero BDL 1.x / 2.x / 3.x
 -- ============================================================
 
@@ -11,24 +11,17 @@ GLOBALS
 END GLOBALS
 
 MAIN
-    DEFINE opcion SMALLINT
     DEFINE continuar SMALLINT
     
-    -- Inicializar entorno
     CALL inicializar_entorno()
     
-    -- Conectar BD
     DATABASE banco
     IF SQLCA.SQLCODE < 0 THEN
         ERROR "Error conectando a BD: ", SQLCA.SQLCODE
         EXIT PROGRAM 1
     END IF
     
-    -- Verificar SPs XML
     CALL verificar_sps_xml()
-    
-    -- Configurar logs
-    CALL configurar_log("logs", "INFO", TRUE)
     CALL log_info("principal", "Aplicación iniciada - Usuario: " || gv_usuario)
     
     LET continuar = TRUE
@@ -38,13 +31,11 @@ MAIN
         CALL mostrar_banner()
         
         MENU "PRINCIPAL"
-            COMMAND "1. Validador de Plantillas"     CALL menu_validacion_principal()
-            COMMAND "2. Configurar Nueva Plantilla"  CALL wizard_configuracion()
-            COMMAND "3. Gestión de Bancos"           CALL menu_gestion_bancos()
-            COMMAND "4. Consultas y Reportes"        CALL menu_consultas()
-            COMMAND "5. Ver Logs"                    CALL menu_logs()
-            COMMAND "6. Utilidades"                  CALL menu_utilidades()
-            COMMAND "0. Salir"                       LET continuar = FALSE
+            COMMAND "1. Validar Archivo SpreadsheetML"  CALL validar_archivo_menu()
+            COMMAND "2. Ver Datos de Archivo"           CALL ver_datos_menu()
+            COMMAND "3. Exportar Datos Validados"       CALL exportar_menu()
+            COMMAND "4. Verificar Entorno"              CALL check_entorno()
+            COMMAND "0. Salir"                          LET continuar = FALSE
         END MENU
     END WHILE
     
@@ -53,35 +44,116 @@ MAIN
 END MAIN
 
 -- ============================================================
--- FUNCIONES DE INICIALIZACIÓN
+-- MENÚ 1: Validar archivo
+-- ============================================================
+FUNCTION validar_archivo_menu()
+    DEFINE v_archivo VARCHAR(300)
+    DEFINE v_exito SMALLINT
+    
+    INPUT BY NAME v_archivo WITHOUT DEFAULTS
+        ON ACTION examinar
+            CALL file_dialog("Seleccionar archivo SpreadsheetML (.xls)", "xls", v_archivo)
+            DISPLAY v_archivo TO archivo
+        ON ACTION validar
+            IF v_archivo IS NULL OR v_archivo = "" THEN
+                ERROR "Seleccione un archivo"
+                CONTINUE INPUT
+            END IF
+            
+            LET v_exito = validar_archivo_spm(v_archivo)
+            
+            IF v_exito THEN
+                MESSAGE "✅ Validación exitosa - todos los datos son válidos"
+            ELSE
+                ERROR "⚠️ Hay errores en los datos - revise el archivo"
+            END IF
+            EXIT INPUT
+        ON ACTION cancelar
+            EXIT INPUT
+    END INPUT
+END FUNCTION
+
+-- ============================================================
+-- MENÚ 2: Ver datos
+-- ============================================================
+FUNCTION ver_datos_menu()
+    DEFINE v_archivo VARCHAR(300)
+    
+    INPUT BY NAME v_archivo WITHOUT DEFAULTS
+        ON ACTION examinar
+            CALL file_dialog("Seleccionar archivo SpreadsheetML (.xls)", "xls", v_archivo)
+            DISPLAY v_archivo TO archivo
+        ON ACTION ver
+            IF v_archivo IS NULL OR v_archivo = "" THEN
+                ERROR "Seleccione un archivo"
+                CONTINUE INPUT
+            END IF
+            CALL mostrar_datos_spm(v_archivo)
+            EXIT INPUT
+        ON ACTION cancelar
+            EXIT INPUT
+    END INPUT
+END FUNCTION
+
+-- ============================================================
+-- MENÚ 3: Exportar
+-- ============================================================
+FUNCTION exportar_menu()
+    DEFINE v_origen VARCHAR(300)
+    DEFINE v_destino VARCHAR(300)
+    DEFINE v_exito SMALLINT
+    
+    INPUT BY NAME v_origen, v_destino WITHOUT DEFAULTS
+        ON ACTION examinar_origen
+            CALL file_dialog("Seleccionar archivo origen (.xls)", "xls", v_origen)
+            DISPLAY v_origen TO archivo_origen
+        ON ACTION examinar_destino
+            CALL file_save_dialog("Guardar exportación", "xls", v_destino)
+            DISPLAY v_destino TO archivo_destino
+        ON ACTION exportar
+            IF v_origen IS NULL OR v_origen = "" THEN
+                ERROR "Seleccione archivo origen"
+                CONTINUE INPUT
+            END IF
+            IF v_destino IS NULL OR v_destino = "" THEN
+                ERROR "Seleccione destino"
+                CONTINUE INPUT
+            END IF
+            
+            LET v_exito = exportar_validados_spm(v_origen, v_destino)
+            IF v_exito THEN
+                MESSAGE "✅ Exportado: ", v_destino
+            ELSE
+                ERROR "Error exportando"
+            END IF
+            EXIT INPUT
+        ON ACTION cancelar
+            EXIT INPUT
+    END INPUT
+END FUNCTION
+
+-- ============================================================
+-- INICIALIZACIÓN
 -- ============================================================
 FUNCTION inicializar_entorno()
-    -- Verificar directorios necesarios
-    RUN "if not exist plantillas_base mkdir plantillas_base"
-    RUN "if not exist plantillas_maestras mkdir plantillas_maestras"
-    RUN "if not exist plantillas_datos mkdir plantillas_datos"
-    RUN "if not exist plantillas_procesadas mkdir plantillas_procesadas"
-    RUN "if not exist plantillas_errores mkdir plantillas_errores"
+    RUN "if not exist plantillas mkdir plantillas"
     RUN "if not exist salida mkdir salida"
     RUN "if not exist logs mkdir logs"
 END FUNCTION
 
 FUNCTION verificar_sps_xml()
     DEFINE v_test LVARCHAR(1000)
-    
-    -- Test genxmlqueryhdr
     SELECT genxmlqueryhdr('test', 'SELECT 1 AS col FROM systables WHERE tabid=1') 
     INTO v_test FROM systables WHERE tabid=1;
-    
     IF v_test IS NULL THEN
-        ERROR "SP genxmlqueryhdr no disponible. Verificar idsxmlvp."
+        ERROR "SP genxmlqueryhdr no disponible"
     END IF
 END FUNCTION
 
 FUNCTION mostrar_banner()
     DISPLAY "╔═══════════════════════════════════════════════════════════════╗"
-    DISPLAY "║          PLANTILLAS VALIDADORAS 4GL v1.0                    ║"
-    DISPLAY "║     Importar • Validar • Exportar datos bancarios           ║"
+    DISPLAY "║          PLANTILLAS VALIDADORAS 4GL v2.0 (100% 4GL)         ║"
+    DISPLAY "║     SpreadsheetML • Validación • Exportar                  ║"
     DISPLAY "║     Informix 14.10  |  Genero BDL 1.x/2.x/3.x              ║"
     DISPLAY "╠═══════════════════════════════════════════════════════════════╣"
     DISPLAY "║  Usuario: ", gv_usuario CLIPPED, "                                        ║"
@@ -90,90 +162,20 @@ FUNCTION mostrar_banner()
 END FUNCTION
 
 FUNCTION limpiar_pantalla()
-    -- En Genero: CLEAR SCREEN o CALL fgl_clearscr()
-    -- Para compatibilidad usamos RUN
     RUN "cls"
 END FUNCTION
 
 -- ============================================================
--- MENÚS SECUNDARIOS (Stubs - implementar después)
+-- UTILIDADES
 -- ============================================================
-FUNCTION menu_gestion_bancos()
-    MENU "GESTIÓN BANCOS"
-        COMMAND "1. Listar Bancos"           CALL listar_bancos()
-        COMMAND "2. Registrar Nuevo Banco"   CALL registrar_banco_ui()
-        COMMAND "3. Ver Plantillas Banco"    CALL ver_plantillas_banco()
-        COMMAND "0. Volver"                  RETURN
-    END MENU
+FUNCTION file_dialog(p_titulo, p_filtro, p_resultado)
+    -- Usar fgl_getfiledialog según versión Genero
 END FUNCTION
 
-FUNCTION menu_consultas()
-    MENU "CONSULTAS Y REPORTES"
-        COMMAND "1. Consulta Libre SQL → XML"    CALL consulta_libre_xml()
-        COMMAND "2. Reporte Movimientos"         CALL reporte_movimientos()
-        COMMAND "3. Reporte Clientes"            CALL reporte_clientes()
-        COMMAND "0. Volver"                      RETURN
-    END MENU
-END FUNCTION
-
-FUNCTION menu_logs()
-    MENU "LOGS DEL SISTEMA"
-        COMMAND "1. Ver Log General (hoy)"       CALL ver_log("app")
-        COMMAND "2. Ver Log Errores (hoy)"       CALL ver_log("errores")
-        COMMAND "3. Ver Log Usuarios (hoy)"      CALL ver_log("usuarios")
-        COMMAND "4. Ver Log Exportaciones"       CALL ver_log("export")
-        COMMAND "0. Volver"                      RETURN
-    END MENU
-END FUNCTION
-
-FUNCTION menu_utilidades()
-    MENU "UTILIDADES"
-        COMMAND "1. Generar Plantilla Ejemplo"   CALL generar_plantilla_ejemplo()
-        COMMAND "2. Verificar Entorno"           CALL check_entorno()
-        COMMAND "3. Limpiar Archivos Temporales" CALL limpiar_temp()
-        COMMAND "0. Volver"                      RETURN
-    END MENU
-END FUNCTION
-
--- ============================================================
--- STUBS PARA FUNCIONES NO IMPLEMENTADAS
--- ============================================================
-FUNCTION listar_bancos()
-    MESSAGE "Pendiente: listar_bancos desde registro_bancos.py"
-END FUNCTION
-
-FUNCTION registrar_banco_ui()
-    MESSAGE "Pendiente: registrar_banco_ui"
-END FUNCTION
-
-FUNCTION ver_plantillas_banco()
-    MESSAGE "Pendiente: ver_plantillas_banco"
-END FUNCTION
-
-FUNCTION consulta_libre_xml()
-    MESSAGE "Pendiente: consulta_libre_xml (usar f_query_to_xml_hdr)"
-END FUNCTION
-
-FUNCTION reporte_movimientos()
-    MESSAGE "Pendiente: reporte_movimientos"
-END FUNCTION
-
-FUNCTION reporte_clientes()
-    MESSAGE "Pendiente: reporte_clientes"
-END FUNCTION
-
-FUNCTION ver_log(p_tipo)
-    MESSAGE "Pendiente: ver_log ", p_tipo
-END FUNCTION
-
-FUNCTION generar_plantilla_ejemplo()
-    MESSAGE "Pendiente: generar_plantilla_ejemplo (python)"
+FUNCTION file_save_dialog(p_titulo, p_ext, p_resultado)
+    -- Usar fgl_getfiledialog modo save
 END FUNCTION
 
 FUNCTION check_entorno()
     MESSAGE "Pendiente: check_entorno"
-END FUNCTION
-
-FUNCTION limpiar_temp()
-    MESSAGE "Pendiente: limpiar_temp"
 END FUNCTION
