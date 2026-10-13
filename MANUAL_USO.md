@@ -280,46 +280,82 @@ cd genero\bdl_2x
 fglrun principal
 ```
 
-**Paso 3.** En el menu elegir:
+Pantalla del menu principal:
 
 ```
-1. Validar Archivo SpreadsheetML
-Ruta: plantillas\plantilla_datos.xls
-Validar
++---------------------------------------------------------------+
+|          PLANTILLAS VALIDADORAS 4GL v2.0 (100% 4GL)         |
+|     SpreadsheetML - Validacion - Exportar                  |
+|     Informix 14.10  |  Genero BDL 1.x/2.x/3.x              |
++---------------------------------------------------------------+
+|  Usuario: demo                                                |
+|  BD: banco  |  Fecha: 12/10/2026                              |
++---------------------------------------------------------------+
+|  PRINCIPAL                                                    |
+|    1. Validar Archivo SpreadsheetML                           |
+|    2. Ver Datos de Archivo                                    |
+|    3. Exportar Datos Validados                                |
+|    4. Ejecutar Tests                                           |
+|    5. Verificar Entorno                                        |
+|    0. Salir                                                   |
++---------------------------------------------------------------+
 ```
+
+**Paso 3.** Elegir opcion `1. Validar Archivo SpreadsheetML`.
+Pantalla de carga:
+
+```
++---------------------------------------------------------------+
+|  Cargar y Validar Datos                                       |
++---------------------------------------------------------------+
+|  Archivo: [plantillas\plantilla_datos.xls        ] [Examinar]  |
+|                                                               |
+|  [Validar]                              [Cancelar]            |
++---------------------------------------------------------------+
+```
+
+Escribir la ruta `plantillas\plantilla_datos.xls` y pulsar `Validar`.
 
 **Paso 4.** Resultado esperado en pantalla:
 
 ```
-Archivo: plantillas\plantilla_datos.xls
-Filas totales: 6
-Fila tags: 3
-Fila datos: 4
-========================================
-Validacion completa
-  Filas OK: 3
-  Filas con error: 0
-========================================
++---------------------------------------------------------------+
+|  Mensajes del sistema                                         |
++---------------------------------------------------------------+
+|  Archivo: plantillas\plantilla_datos.xls                      |
+|  Filas totales: 6                                             |
+|  Fila tags: 3                                                 |
+|  Fila datos: 4                                                |
+|  ========================================                     |
+|  Validacion completa                                          |
+|    Filas OK: 3                                                |
+|    Filas con error: 0                                         |
+|  ========================================                     |
++---------------------------------------------------------------+
+|  [OK] Validacion exitosa - todos los datos son validos        |
++---------------------------------------------------------------+
 ```
 
-Y mensaje final:
+**Paso 5.** Volver al menu y elegir `3. Exportar Datos Validados`.
+Pantalla de exportacion:
 
 ```
-Validacion exitosa - todos los datos son validos
-```
-
-**Paso 5.** Exportar el resultado limpio:
-
-```
-3. Exportar Datos Validados
-Origen:  plantillas\plantilla_datos.xls
-Destino: salida\datos_validados.xls
++---------------------------------------------------------------+
+|  Exportar Datos Validados                                     |
++---------------------------------------------------------------+
+|  Origen:  [plantillas\plantilla_datos.xls       ] [Examinar]   |
+|  Destino: [salida\datos_validados.xls           ] [Examinar]   |
+|                                                               |
+|  [Exportar]                             [Cancelar]            |
++---------------------------------------------------------------+
 ```
 
 Mensaje esperado:
 
 ```
-Exportado sin tags: salida\datos_validados.xls
++---------------------------------------------------------------+
+|  [OK] Exportado sin tags: salida\datos_validados.xls         |
++---------------------------------------------------------------+
 ```
 
 **Paso 6.** Abrir `salida\datos_validados.xls` en Excel y verificar:
@@ -353,25 +389,25 @@ Validar
 **Paso 3.** Resultado esperado en pantalla:
 
 ```
-Archivo: plantillas\plantilla_errores.xls
-Filas totales: 5
-Fila tags: 3
-Fila datos: 4
-Fila 4: Tipo documento invalido: INVALIDO
-Fila 4: Documento invalido: 123
-Fila 4: Apellidos invalidos: PEREZ123
-Fila 4: Nombres invalidos: JUAN@
-========================================
-Validacion completa
-  Filas OK: 1
-  Filas con error: 1
-========================================
-```
-
-Y mensaje final:
-
-```
-Hay errores en los datos - revise el archivo
++---------------------------------------------------------------+
+|  Mensajes del sistema                                         |
++---------------------------------------------------------------+
+|  Archivo: plantillas\plantilla_errores.xls                    |
+|  Filas totales: 5                                             |
+|  Fila tags: 3                                                 |
+|  Fila datos: 4                                                |
+|  Fila 4: Tipo documento invalido: INVALIDO                    |
+|  Fila 4: Documento invalido: 123                              |
+|  Fila 4: Apellidos invalidos: PEREZ123                        |
+|  Fila 4: Nombres invalidos: JUAN@                             |
+|  ========================================                     |
+|  Validacion completa                                          |
+|    Filas OK: 1                                                |
+|    Filas con error: 1                                         |
+|  ========================================                     |
++---------------------------------------------------------------+
+|  [!] Hay errores en los datos - revise el archivo             |
++---------------------------------------------------------------+
 ```
 
 **Paso 4.** Abrir la hoja **Errores** del mismo archivo:
@@ -397,8 +433,28 @@ Guardar y volver a validar (Escenario A, Paso 3). Ahora debe dar
 ```
 fglrun principal
   -> 4. Ejecutar Tests
-  -> 8. Test: Validar todos los validadores
 ```
+
+Pantalla del menu de tests:
+
+```
++---------------------------------------------------------------+
+|  TESTS SPREADSHEETML                                          |
++---------------------------------------------------------------+
+|    1. Test: Leer archivo SpreadsheetML                        |
+|    2. Test: Validar archivo con datos OK                      |
+|    3. Test: Validar archivo con errores                       |
+|    4. Test: Validar archivo vacio                             |
+|    5. Test: Validar con tags faltantes                        |
+|    6. Test: Validar con caracteres especiales                 |
+|    7. Test: Exportar SpreadsheetML                            |
+|    8. Test: Validar todos los validadores                     |
+|    9. Test: Validar archivo inexistente                       |
+|    0. Volver                                                  |
++---------------------------------------------------------------+
+```
+
+Elegir `8. Test: Validar todos los validadores`.
 
 Salida esperada (resumen):
 
