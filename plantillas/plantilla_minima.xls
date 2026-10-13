@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Font ss:FontName="Calibri" ss:Size="11"/>
+  </Style>
+  <Style ss:ID="Header">
+   <Font ss:Bold="1" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#003366" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="Title">
+   <Font ss:Bold="1" ss:Size="14" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#003366" ss:Pattern="Solid"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Datos">
+  <Table>
+   <Row>
+    <Cell ss:StyleID="Title"><Data ss:Type="String">BANCO NACION - Clientes</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Tipo Doc</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Nro Doc</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Apellidos</Data></Cell>
+    <Cell ss:StyleID="Header"><Data ss:Type="String">Nombres</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">{{tipo_doc}}</Data></Cell>
+    <Cell><Data ss:Type="String">{{num_doc}}</Data></Cell>
+    <Cell><Data ss:Type="String">{{apellidos}}</Data></Cell>
+    <Cell><Data ss:Type="String">{{nombres}}</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">DNI</Data></Cell>
+    <Cell><Data ss:Type="String">30123456</Data></Cell>
+    <Cell><Data ss:Type="String">PEREZ</Data></Cell>
+    <Cell><Data ss:Type="String">JUAN</Data></Cell>
+   </Row>
+   <Row>
+    <Cell><Data ss:Type="String">DNI</Data></Cell>
+    <Cell><Data ss:Type="String">30789012</Data></Cell>
+    <Cell><Data ss:Type="String">GARCIA</Data></Cell>
+    <Cell><Data ss:Type="String">MARIA</Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+</Workbook>
