@@ -250,6 +250,179 @@ fglrun principal
 
 ---
 
+# SESION DE EJEMPLO COMPLETA (paso a paso)
+
+Sesion real usando los archivos que trae el repo. Sirve para
+aprender el flujo y para probar que todo funciona.
+
+## Escenario A: datos correctos (todo OK)
+
+**Paso 1.** Abrir en Excel:
+
+```
+plantillas\plantilla_datos.xls
+```
+
+Ver: fila 1 titulo, fila 2 encabezados, fila 3 tags
+`{{tipo_doc}} {{num_doc}} {{apellidos}} {{nombres}}`,
+filas 4-6 con datos:
+
+```
+DNI | 30123456 | PEREZ  | JUAN CARLOS
+DNI | 30789012 | GARCIA | MARIA ELENA
+LE  | 20456789 | LOPEZ  | CARLOS ALBERTO
+```
+
+**Paso 2.** Ejecutar el programa:
+
+```cmd
+cd genero\bdl_2x
+fglrun principal
+```
+
+**Paso 3.** En el menu elegir:
+
+```
+1. Validar Archivo SpreadsheetML
+Ruta: plantillas\plantilla_datos.xls
+Validar
+```
+
+**Paso 4.** Resultado esperado en pantalla:
+
+```
+Archivo: plantillas\plantilla_datos.xls
+Filas totales: 6
+Fila tags: 3
+Fila datos: 4
+========================================
+Validacion completa
+  Filas OK: 3
+  Filas con error: 0
+========================================
+```
+
+Y mensaje final:
+
+```
+Validacion exitosa - todos los datos son validos
+```
+
+**Paso 5.** Exportar el resultado limpio:
+
+```
+3. Exportar Datos Validados
+Origen:  plantillas\plantilla_datos.xls
+Destino: salida\datos_validados.xls
+```
+
+Mensaje esperado:
+
+```
+Exportado sin tags: salida\datos_validados.xls
+```
+
+**Paso 6.** Abrir `salida\datos_validados.xls` en Excel y verificar:
+
+- Titulo y encabezados con diseno azul
+- Solo datos reales, **sin tags `{{}}`**
+- Las 3 filas de clientes
+
+## Escenario B: datos con errores
+
+**Paso 1.** Abrir en Excel:
+
+```
+plantillas\plantilla_errores.xls
+```
+
+Hoja **Datos**, fila 4:
+
+```
+INVALIDO | 123 | PEREZ123 | JUAN@
+```
+
+**Paso 2.** Validar igual que en el Escenario A:
+
+```
+1. Validar Archivo SpreadsheetML
+Ruta: plantillas\plantilla_errores.xls
+Validar
+```
+
+**Paso 3.** Resultado esperado en pantalla:
+
+```
+Archivo: plantillas\plantilla_errores.xls
+Filas totales: 5
+Fila tags: 3
+Fila datos: 4
+Fila 4: Tipo documento invalido: INVALIDO
+Fila 4: Documento invalido: 123
+Fila 4: Apellidos invalidos: PEREZ123
+Fila 4: Nombres invalidos: JUAN@
+========================================
+Validacion completa
+  Filas OK: 1
+  Filas con error: 1
+========================================
+```
+
+Y mensaje final:
+
+```
+Hay errores en los datos - revise el archivo
+```
+
+**Paso 4.** Abrir la hoja **Errores** del mismo archivo:
+
+| Fila | Campo | Valor Ingresado | Motivo del Error | Validador |
+|------|-------|----------------|-----------------|-----------|
+| 4 | tipo_doc | INVALIDO | No existe en catalogo (DNI, LE, LC, PAS) | val_catalogo |
+| 4 | num_doc | 123 | Documento debe tener 5-20 caracteres | val_documento |
+| 4 | apellidos | PEREZ123 | Solo letras permitidas (no numeros) | val_nombre |
+| 4 | nombres | JUAN@ | Caracter especial no permitido: @ | val_nombre |
+
+**Paso 5.** Corregir la fila 4 en Excel (ejemplo):
+
+```
+DNI | 30123456 | PEREZ | JUAN
+```
+
+Guardar y volver a validar (Escenario A, Paso 3). Ahora debe dar
+`Filas OK` sin errores.
+
+## Escenario C: correr los 9 tests
+
+```
+fglrun principal
+  -> 4. Ejecutar Tests
+  -> 8. Test: Validar todos los validadores
+```
+
+Salida esperada (resumen):
+
+```
+val_nombre: Perez Juan -> OK
+val_nombre: P3R3Z -> ERROR (correcto)
+val_documento: 30123456 -> OK
+val_documento: 123 -> ERROR (correcto)
+val_fecha: 15/03/1985 -> OK
+val_fecha: 32/13/2025 -> ERROR (correcto)
+val_email: juan@email.com -> OK
+val_email: juan@ -> ERROR (correcto)
+val_telefono: 011-4567-8901 -> OK
+val_anio: 1985 -> OK
+val_anio: 1800 -> ERROR (correcto)
+val_monto: 15000.50 -> OK
+val_monto: -100 -> ERROR (correcto)
+```
+
+Si alguna linea dice `(incorrecto)`, el validador tiene un bug:
+revisar `genero\base\validacion.4gl`.
+
+---
+
 # PARTE 2: CON PYTHON (archivos .xlsx nativos)
 
 Usa archivos **`.xlsx` reales** (formato Office Open XML) con la
