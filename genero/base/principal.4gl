@@ -39,10 +39,11 @@ MAIN
         
         MENU "PRINCIPAL"
             COMMAND "1. Validador de Plantillas"     CALL menu_validacion_principal()
-            COMMAND "2. Gestión de Bancos"           CALL menu_gestion_bancos()
-            COMMAND "3. Consultas y Reportes"        CALL menu_consultas()
-            COMMAND "4. Ver Logs"                    CALL menu_logs()
-            COMMAND "5. Utilidades"                  CALL menu_utilidades()
+            COMMAND "2. Configurar Nueva Plantilla"  CALL wizard_configuracion()
+            COMMAND "3. Gestión de Bancos"           CALL menu_gestion_bancos()
+            COMMAND "4. Consultas y Reportes"        CALL menu_consultas()
+            COMMAND "5. Ver Logs"                    CALL menu_logs()
+            COMMAND "6. Utilidades"                  CALL menu_utilidades()
             COMMAND "0. Salir"                       LET continuar = FALSE
         END MENU
     END WHILE

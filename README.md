@@ -5,11 +5,14 @@ Sistema bancario para **importar, validar y exportar** datos entre Excel e Infor
 ## Flujo Principal
 
 ```
-1. Usuario elige banco → Sistema carga config JSON (campos, validadores)
-2. Usuario descarga plantilla con tags {{campo}} → Llena datos en Excel
-3. Usuario sube archivo → Sistema valida cada campo (val_* 4GL + reglas BD)
-4. Si OK → exporta a cualquier formato (XLSX, CSV, XML, PDF, HTML)
-5. Si ERROR → muestra errores → usuario corrige → reintenta
+1. (Una vez por plantilla) Menú 2: Configurar Nueva Plantilla
+   → Sube Excel → Wizard detecta columnas → Asignas validador a cada una → Guarda JSON
+
+2. Usuario elige banco → Sistema carga config JSON (campos, validadores)
+3. Usuario descarga plantilla con tags {{campo}} → Llena datos en Excel
+4. Usuario sube archivo → Sistema valida cada campo (val_* 4GL + reglas BD)
+5. Si OK → exporta a cualquier formato (XLSX, CSV, XML, PDF, HTML)
+6. Si ERROR → muestra errores → usuario corrige → reintenta
 ```
 
 ## Estructura Simplificada
